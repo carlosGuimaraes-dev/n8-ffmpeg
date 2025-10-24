@@ -1,3 +1,4 @@
+#version v1.1
 name: Build & Push n8n-ffmpeg
 on:
   workflow_dispatch:
