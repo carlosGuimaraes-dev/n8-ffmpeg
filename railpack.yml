@@ -1,0 +1,6 @@
+# railpack.yml
+
+runtime_image: ubuntu:22.04
+
+runtime_packages:
+  - ffmpeg
