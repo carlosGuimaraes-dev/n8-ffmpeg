@@ -1,65 +1,87 @@
-# n8n com FFmpeg (Build Automatizado)
+# n8n with FFmpeg
 
 [![Build & Push Docker Image](https://github.com/carlosGuimaraes-dev/n8-ffmpeg/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/carlosGuimaraes-dev/n8-ffmpeg/actions/workflows/docker-publish.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/carlosguimaraes76/n8n-ffmpeg)](https://hub.docker.com/r/carlosguimaraes76/n8n-ffmpeg)
 
-Este repositório contém a configuração para construir uma imagem Docker customizada do **n8n**, a ferramenta de automação de workflows, com a adição do **FFmpeg**.
+This repository contains the configuration to build a custom **n8n** Docker image that includes **FFmpeg**.
 
-Isso permite a criação de fluxos de trabalho que podem executar operações complexas de manipulação de áudio e vídeo, como conversão de formatos, extração de clipes, geração de thumbnails e muito mais, diretamente de dentro do n8n através do nó "Execute Command".
+This enhancement allows for the creation of powerful automation workflows that can perform complex audio and video manipulation tasks, such as format conversion, clip extraction, thumbnail generation, and much more, directly within n8n using the "Execute Command" node.
 
-A imagem é construída e publicada automaticamente no Docker Hub via GitHub Actions.
+The image is automatically built and published to Docker Hub via GitHub Actions.
 
 ## ✨ Features
 
--   **Baseado no n8n oficial:** Utiliza a imagem oficial do n8n como base, garantindo estabilidade.
--   **FFmpeg incluído:** Vem com uma instalação completa do FFmpeg, pronta para uso.
--   **Builds automatizados:** Cada `push` na branch `main` aciona o GitHub Actions para construir e publicar uma nova imagem no Docker Hub.
--   **Pronto para Deploy:** Otimizado para fazer deploy em plataformas como Railway, Heroku, etc.
+-   **Based on Official n8n:** Uses the official n8n image as its foundation, ensuring stability and compatibility.
+-   **FFmpeg Included:** Comes with a full installation of FFmpeg, ready to be used in your workflows.
+-   **Automated Builds:** Every `push` to the `main` branch triggers a GitHub Action to build and publish a fresh image to Docker Hub.
+-   **Deploy Ready:** Optimized for easy deployment on platforms like Railway, Heroku, and others.
 
-## ⚙️ Como Funciona o Build
+## ⚙️ How the Build Works
 
-O processo de CI/CD é simples e totalmente gerenciado pelo GitHub Actions:
+The CI/CD process is managed entirely by GitHub Actions:
 
-1.  Um `push` é feito na branch `main`.
-2.  O workflow definido em `.github/workflows/docker-publish.yml` é acionado.
-3.  O Action faz login no Docker Hub usando os segredos `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN`.
-4.  A imagem Docker é construída a partir do `Dockerfile`.
-5.  A imagem final é enviada (push) para o Docker Hub com as tags `latest` e uma tag de versão específica.
+1.  A `push` is made to the `main` branch.
+2.  The workflow defined in `.github/workflows/docker-publish.yml` is triggered.
+3.  The Action logs into Docker Hub using the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets.
+4.  The Docker image is built from the `Dockerfile` in this repository.
+5.  The final image is pushed to Docker Hub with the `latest` and a specific version tag.
 
-## 🚀 Deploy no Railway
+## 🚀 Deploy on Railway
 
-Esta imagem é ideal para fazer deploy no Railway. Siga os passos abaixo:
+This image is ideal for deploying on Railway. Follow these steps:
 
-1.  **Crie um Novo Projeto:** No seu painel do Railway, clique em **New Project**.
-2.  **Deploy a partir de uma Imagem Docker:** Escolha a opção **Deploy from Docker Image**.
-3.  **Informe o nome da Imagem:**
+1.  **Create a New Project:** In your Railway dashboard, click **New Project**.
+2.  **Deploy from Docker Image:** Choose the **Deploy from Docker Image** option.
+3.  **Provide the Image Name:**
     `carlosguimaraes76/n8n-ffmpeg:latest`
-4.  **Defina o Comando de Inicialização:**
-    -   Após o deploy inicial (que pode falhar), vá para a aba **Settings** do seu novo serviço.
-    -   Na seção "Service", encontre o campo **Start Command**.
-    -   Insira o seguinte comando:
+4.  **Set the Start Command:**
+    -   After the initial deployment (which might fail), go to your new service's **Settings** tab.
+    -   In the "Service" section, locate the **Start Command** field.
+    -   Enter the following command:
         ```
         n8n
         ```
-    -   Isso garantirá que o Railway inicie o contêiner corretamente.
+    -   This ensures Railway starts the container correctly.
 
-## 🔧 Configuração (Variáveis de Ambiente)
+## 🔧 Configuration (Environment Variables)
 
-Para rodar n8n em produção, você **precisa** configurar algumas variáveis de ambiente no Railway (na aba **Variables** do seu serviço).
+To run n8n in production, you **must** configure the following environment variables in your Railway service's **Variables** tab.
 
-| Variável | Descrição | Exemplo de Valor |
-| :--- | :--- | :--- |
-| `N8N_ENCRYPTION_KEY` | **(OBRIGATÓRIO)** Chave secreta para criptografar suas credenciais. [Gere uma string longa e aleatória](https://1password.com/password-generator/). | `uma_string_muito_longa_e_aleatoria_de_32_chars` |
-| `WEBHOOK_URL` | **(OBRIGATÓRIO)** A URL pública do seu serviço. Você pode encontrá-la na aba **Settings** do Railway. | `https://meu-n8n.up.railway.app/` |
-| `GENERIC_TIMEZONE` | **(Recomendado)** Garante que os workflows agendados (CRON) rodem no fuso horário correto. | `America/Los_Angeles` |
-| `DB_TYPE` | **(Recomendado)** Para usar um banco de dados persistente (evita perder dados a cada deploy). | `postgresdb` |
-| `DB_POSTGRESDB_*` | **(Recomendado)** Variáveis de conexão com o banco de dados. O Railway as fornece automaticamente quando você cria um serviço PostgreSQL. | `${{Postgres.host}}`, `${{Postgres.database}}`, etc. |
+| Variable             | Description                                                                                                                   | Example Value                                        |
+| :------------------- | :---------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
+| `N8N_ENCRYPTION_KEY` | **(REQUIRED)** A secret key to encrypt your credentials. [Generate a long, random string](https://1password.com/password-generator/).     | `a_very_long_and_random_string_of_at_least_32_chars` |
+| `WEBHOOK_URL`        | **(REQUIRED)** The public URL of your service. You can find this in the Railway **Settings** tab.                                 | `https://my-n8n-instance.up.railway.app/`                |
+| `GENERIC_TIMEZONE`   | **(Recommended)** Ensures that scheduled workflows (CRON) run in the correct timezone.                                        | `America/Los_Angeles`                                |
+| `DB_TYPE`            | **(Recommended)** To use a persistent database, preventing data loss on redeploy.                                             | `postgresdb`                                         |
+| `DB_POSTGRESDB_*`    | **(Recommended)** Connection variables for the database. Railway provides these automatically when you add a PostgreSQL service. | `${{Postgres.host}}`, `${{Postgres.database}}`, etc.     |
 
 ---
 
-## 💻 Desenvolvimento Local (Opcional)
+## 💻 Local Development (Optional)
 
-Se você tiver Docker instalado localmente e quiser testar a imagem:
+If you have Docker installed locally and wish to test the image:
+
+**1. Build the image:**
+```bash
+docker build -t n8n-ffmpeg .
+```
+
+**2. Run the container:**
+```bash
+docker run -d --rm \
+  --name n8n-local \
+  -p 5678:5678 \
+  -e N8N_ENCRYPTION_KEY="your_super_secret_key_here" \
+  -e GENERIC_TIMEZONE="America/Los_Angeles" \
+  n8n-ffmpeg
+```
+
+You can then access the local instance at `http://localhost:5678`.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+```
 
 **1. Construa a imagem:**
 ```bash
