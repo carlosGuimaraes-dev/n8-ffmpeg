@@ -22,5 +22,5 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            carlosguimaraes76/n8n-ffmpeg:1.116.2
+            carlosguimaraes76/n8n-ffmpeg:${{ github.sha }}
             carlosguimaraes76/n8n-ffmpeg:latest
