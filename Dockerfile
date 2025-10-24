@@ -3,4 +3,4 @@ USER root
 RUN apk add --no-cache ffmpeg
 USER node
 
-#version v1.0
+#version v1.2
